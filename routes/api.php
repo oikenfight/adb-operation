@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['middleware' => ['api']], function () {
+    // Home
     Route::get('/index', [
         'uses' => 'Api\HomeController@index',
         'as' => 'api.index',
@@ -33,8 +34,14 @@ Route::group(['middleware' => ['api']], function () {
         'as' => 'api.show',
     ]);
 
-    Route::post('/upload', [
-        'uses' => 'Api\HomeController@upload',
-        'as' => 'api.upload',
+    // Operations
+    Route::get('screen_shot', [
+        'uses' => 'Api\OperationsController@screenshot',
+        'as' => 'api.screen.shot'
     ]);
+    Route::post('/screen_shot', [
+        'uses' => 'Api\OperationsController@uploadScreenShot',
+        'as' => 'api.upload.screen.shot',
+    ]);
+
 });
