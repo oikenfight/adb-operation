@@ -22,11 +22,19 @@
             <h2>スクリーンショット</h2>
         </div>
 
-        <!-- コンテンツ -->
-        <div class="row">
-            <div class="offset-3 col-6">
-                <img :src="imageSrc" class="img-fluid" :alt="image">
-            </div>
+        <div>
+            <p>currentXY: ({{ mouse.current.x }}, {{ mouse.current.y }})</p>
+            <p>previousXY: ({{ mouse.previous.x }}, {{ mouse.previous.y }}), ..... dragToXY: ({{ mouse.dragTo.x }}, {{ mouse.dragTo.y }})</p>
+        </div>
+
+        <div>
+            <img id="image-preview" :src="imageSrc"
+                 v-on:mousedown="mouseDown"
+                 v-on:mouseup="mouseUp"
+                 v-on:mousemove="mouseMove"
+                 v-on:mouseout="mouseOut"
+                 draggable="false"
+            />
         </div>
     </div>
 </template>
@@ -37,15 +45,123 @@
             return {
                 date: this.$route.params.date,
                 image: this.$route.params.image,
-                imageSrc: ''
+                imageSrc: '',
+                enable: false,
+                mouse: {
+                    down: false,
+                    current: {
+                        x: 0,
+                        y: 0,
+                    },
+                    previous: {
+                        x: 0,
+                        y: 0,
+                    },
+                    dragTo: {
+                        x: 0,
+                        y: 0,
+                    },
+                    setPreviousXY (x, y) {
+                        this.previous.x = x
+                        this.previous.y = y
+                    },
+                    setDragToXY (x, y) {
+                        this.dragTo.x = x
+                        this.dragTo.y = y
+                    },
+                    clearCurrentXY () {
+                        this.current.x = 0
+                        this.current.y = 0
+                    },
+                    clearXY () {
+                        this.current.x = 0
+                        this.current.y = 0
+                        this.previous.x = 0
+                        this.previous.y = 0
+                        this.dragTo.x = 0
+                        this.dragTo.y = 0
+                    },
+                }
             }
         },
         created() {
             this.imageSrc = '/storage/' + this.date + '/' + this.image + '.png'
         },
+        methods: {
+            mouseDown (event) {
+                console.log('mouse down')
+                this.mouse.setPreviousXY(this.mouse.current.x, this.mouse.current.y)
+                this.mouse.down = true;
+            },
+            mouseUp (event) {
+                console.log('mouse up')
+                console.log(this.enabled)
+                console.log(this.mouse.down)
+                if (this.enabled && this.mouse.down) {
+                    this.mouse.setDragToXY(this.mouse.current.x, this.mouse.current.y)
+                } else if (!this.enabled && this.mouse.down) {
+                    this.clear()
+                }
+                this.mouse.down = false
+            },
+            mouseMove (event) {
+                console.log('mouse move')
+                this.currentXY(event)
+                if (!this.enabled) {
+                    console.log(this.enabled)
+                    this.enabled = true
+                }
+            },
+            mouseOut (event) {
+                console.log('mouse out')
+                this.enabled = false
+                if (this.mouse.down) {
+                    this.clear()
+                }
+                this.clearCurrentXY()
+            },
+            clear () {
+                this.mouse.clearXY()
+            },
+            clearCurrentXY() {
+                this.mouse.clearCurrentXY()
+            },
+            currentXY (event) {
+                const mouseX = event.pageX    // X座標
+                const mouseY = event.pageY    // Y座標
+
+                // 要素の位置を取得
+                const elem = event.target || event.srcElement || window.event.target || window.event.srcElement || element
+                const rect = elem.getBoundingClientRect()
+
+                // 要素の位置座標を計算
+                const positionX = rect.left + window.pageXOffset    // 要素のX座標
+                const positionY = rect.top + window.pageYOffset    // 要素のY座標
+
+                // 要素の左上からの距離を計算
+                const offsetX = mouseX - positionX
+                const offsetY = mouseY - positionY
+
+                this.mouse.current.x = offsetX
+                this.mouse.current.y = offsetY
+
+                return this.mouse.current
+            },
+            previousXY () {
+                this.mouse.previous.x = this.mouse.current.x
+                this.mouse.previous.y = this.mouse.current.y
+            },
+            dragToXY () {
+                this.mouse.draggingTo.x = this.mouse.current.x
+                this.mouse.draggingTo.y = this.mouse.current.y
+            },
+        },
     }
 </script>
 
 <style scoped>
-
+    #image-preview {
+        width: 500px;
+        height: 1000px;
+    }
 </style>
