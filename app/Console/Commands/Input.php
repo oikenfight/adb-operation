@@ -18,7 +18,7 @@ class Input extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Enter text when the device is ready for input.';
 
     /**
      * Create a new command instance.
@@ -35,20 +35,20 @@ class Input extends Command
      *
      * @return mixed
      */
-    public function handle(Operator $operator)
+    public function handle(AdbOperator $adbOperator)
     {
         $arguments = $this->arguments();
         $text = $arguments['text'];
 
         $name = 'test.png';
 
-        $operator->turnOnIfDisplayPowerOff();
-        if ($operator->findKeyboard()) {
-            $operator->input($text);
+        $adbOperator->turnOnIfDisplayPowerOff();
+        if ($adbOperator->findKeyboard()) {
+            $adbOperator->input($text);
         } else {
             return 400;
         };
-        $operator->screenShot($name);
+        $adbOperator->screenShot($name);
 
         return 200;
     }

@@ -40,7 +40,7 @@ final class Tap extends Command
      *
      * @return mixed
      */
-    public function handle(Operator $operator)
+    public function handle(AdbOperator $adbOperator)
     {
         $arguments = $this->arguments();
         $x = $arguments['x'];
@@ -51,13 +51,13 @@ final class Tap extends Command
         $name = 'test.png';
 
         // setter
-        $operator->setMaxXY((int)$maxX, (int)$maxY);
-        $operator->setXY((int)$x, (int)$y);
+        $adbOperator->setMaxXY((int)$maxX, (int)$maxY);
+        $adbOperator->setXY((int)$x, (int)$y);
 
         // operate
-        $operator->turnOnIfDisplayPowerOff();
-        $operator->tap();
-        $operator->screenShot($name);
+        $adbOperator->turnOnIfDisplayPowerOff();
+        $adbOperator->tap();
+        $adbOperator->screenShot($name);
 
         return 200;
     }

@@ -7,7 +7,7 @@ namespace App\Console\Commands;
  * Class Operation
  * @package App\Console\Commands
  */
-final class Operator
+final class AdbOperator
 {
     const SCREEN_X_SIZE = 1020;
 
