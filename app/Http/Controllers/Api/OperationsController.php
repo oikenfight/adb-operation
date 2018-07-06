@@ -21,6 +21,83 @@ final class OperationsController extends Controller
     const POST_URL = 'http://127.0.0.1:8080/api/screen_shot';
 
     /**
+     * @param Request $request
+     * @return array
+     */
+    public function tap(Request $request)
+    {
+        $result = Artisan::call('adb:tap', [
+            'x' => $request->input('x'),
+            'y' => $request->input('y'),
+            'maxX' => $request->input('maxX'),
+            'maxY' => $request->input('maxY'),
+        ]);
+
+        if ($result == 200) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'タップしました。',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'タップに失敗しました。リロードしてからもう一度試してください。',
+            ], 400);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function swipe(Request $request)
+    {
+        $result = Artisan::call('adb:swipe', [
+            'x' => $request->input('x'),
+            'y' => $request->input('y'),
+            'toX' => $request->input('toX'),
+            'toY' => $request->input('toY'),
+            'maxX' => $request->input('maxX'),
+            'maxY' => $request->input('maxY'),
+        ]);
+
+        if ($result == 200) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'スワイプしました。',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'スワイプに失敗しました。リロードしてからもう一度試してください。',
+            ], 400);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function input(Request $request)
+    {
+        $result = Artisan::call('adb:input', [
+            'text' => $request->input('text'),
+        ]);
+
+        if ($result == 200) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'テキストを入力しました。',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'テキストの入力に失敗しました。キーボード入力画面が表示されているか確認してください。',
+            ], 400);
+        }
+    }
+    
+    /**
      * @return int
      */
     public function screenShot()
