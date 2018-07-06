@@ -1,10 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class Input extends Command
+/**
+ * Class Input
+ * @package App\Console\Commands
+ */
+final class Input extends Command
 {
     /**
      * The name and signature of the console command.
@@ -43,11 +48,7 @@ class Input extends Command
         $name = 'test.png';
 
         $adbOperator->turnOnIfDisplayPowerOff();
-        if ($adbOperator->findKeyboard()) {
-            $adbOperator->input($text);
-        } else {
-            return 400;
-        };
+        $adbOperator->input($text);
         $adbOperator->screenShot($name);
 
         return 200;
