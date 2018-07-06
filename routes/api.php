@@ -43,6 +43,10 @@ Route::group(['middleware' => ['api']], function () {
         'uses' => 'Api\OperationsController@swipe',
         'as' => 'api.swipe'
     ]);
+    Route::get('inputable', [
+        'uses' => 'Api\OperationsController@inputable',
+        'as' => 'api.inputable'
+    ]);
     Route::get('input', [
         'uses' => 'Api\OperationsController@input',
         'as' => 'api.input'
