@@ -21,6 +21,42 @@ final class OperationsController extends Controller
     const POST_URL = 'http://127.0.0.1:8080/api/screen_shot';
 
     /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function back()
+    {
+        $result = Artisan::call('adb:back');
+        return response()->json([
+            'status' => 'success',
+            'message' => '「戻る」ボタンを押しました。',
+        ], 200);
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function enter()
+    {
+        $result = Artisan::call('adb:enter');
+        return response()->json([
+            'status' => 'success',
+            'message' => '「決定」ボタンを押しました。',
+        ], 200);
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function home()
+    {
+        $result = Artisan::call('adb:home');
+        return response()->json([
+            'status' => 'success',
+            'message' => '「ホーム」ボタンを押しました。',
+        ], 200);
+    }
+
+    /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
