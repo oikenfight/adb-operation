@@ -1,9 +1,7 @@
 <template>
-    <div class="row">
-        <div class="col-12">
-            <div @v-if="visible" @click="clear" class="alert" :class="alertType" role="alert">
-                {{ message }}
-            </div>
+    <div class="col-12">
+        <div @v-if="visible" @click="clear" class="alert" :class="alertType" role="alert">
+            {{ message }}
         </div>
     </div>
 </template>

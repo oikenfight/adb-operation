@@ -6,7 +6,7 @@
         </div>
 
         <div class="row">
-            <div class="col-6 justify-content-center">
+            <div class="col-5 justify-content-center">
                 <img id="image-preview" :src="imageSrc"
                      v-on:mousedown="mouseDown"
                      v-on:mouseup="mouseUp"
@@ -16,19 +16,33 @@
                 />
             </div>
 
-            <div class="col-6">
-                <alert ref="message"></alert>
-
-                <div class="row">
-                    <div class="col-12">
-                        <p>currentXY: ({{ mouse.current.x }}, {{ mouse.current.y }})</p>
+            <div class="col-7 card ">
+                <div class="col-12">
+                    <!-- アラート -->
+                    <div class="row">
+                        <alert ref="message"></alert>
                     </div>
-                    <div class="col-12">
-                        <p>Clicked XY: ({{ mouse.clickedAt.x }}, {{ mouse.clickedAt.y }}), ..... Dragged XY: ({{ mouse.draggedAt.x }}, {{ mouse.draggedAt.y }})</p>
+
+                    <!-- 座標 -->
+                    <div class="row card card-body">
+                        <h4>座標</h4>
+                        <div class="col-12">
+                            <p>マウス: ({{ mouse.current.x }}, {{ mouse.current.y }})</p>
+                        </div>
+                        <div class="col-12">
+                            <p>タッチ: ({{ mouse.clickedAt.x }}, {{ mouse.clickedAt.y }}), ..... スワイプ: ({{ mouse.draggedAt.x }}, {{ mouse.draggedAt.y }})</p>
+                        </div>
+                    </div>
+
+                    <!-- 操作 -->
+                    <div class="row card card-body" style="padding-top: 50px;">
+                        <h4>操作</h4>
+                        <div class="col-12">
+                            <operation></operation>
+                            <text-form @parentInput="input"></text-form>
+                        </div>
                     </div>
                 </div>
-
-                <text-form @parentInput="input"></text-form>
             </div>
         </div>
     </div>
@@ -37,10 +51,12 @@
 <script>
     import alert from './Alert'
     import text_form from './TextForm'
+    import operation from './Operation'
 
     export default {
         components: {
             'alert': alert,
+            'operation': operation,
             'text-form': text_form
         },
         data() {
@@ -210,6 +226,7 @@
                     this.imageSrc = '/storage/test.png?' + date.getTime()
                     this.$refs.message.set(response.data.message, 'alert-success')
                 }).catch((error) => {
+                    console.log(error)
                     const date = new Date()
                     this.imageSrc = '/storage/test.png?' + date.getTime()
                     this.$refs.message.set('テキストの入力に失敗しました。キーボード入力画面が表示されているか確認してください。', 'alert-danger')
