@@ -22,7 +22,7 @@ final class OperationsController extends Controller
 
     /**
      * @param Request $request
-     * @return array
+     * @return \Illuminate\Http\JsonResponse
      */
     public function tap(Request $request)
     {
@@ -48,7 +48,7 @@ final class OperationsController extends Controller
 
     /**
      * @param Request $request
-     * @return array
+     * @return \Illuminate\Http\JsonResponse
      */
     public function swipe(Request $request)
     {
@@ -75,8 +75,27 @@ final class OperationsController extends Controller
     }
 
     /**
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function inputable()
+    {
+        \Log::debug('here is inputable in contoller');
+        $result = Artisan::call('adb:inputable');
+        if ($result == 400) {
+            return response()->json([
+                'status' => 'error',
+                'message' => '入力が可能な状態ではありません。操作し直してください。'
+            ], 400);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'キーボード入力が可能です。'
+        ],200);
+    }
+
+    /**
      * @param Request $request
-     * @return array
+     * @return \Illuminate\Http\JsonResponse
      */
     public function input(Request $request)
     {
