@@ -7,7 +7,7 @@ namespace App\Console\Commands;
  * Class Operation
  * @package App\Console\Commands
  */
-final class Operator
+final class AdbOperator
 {
     const SCREEN_X_SIZE = 1020;
 
@@ -98,6 +98,36 @@ final class Operator
     }
 
     /**
+     * @return void
+     */
+    public function back()
+    {
+        \Log::debug('input keyevent back');
+        exec('adb shell input keyevent 4');
+        sleep(1);
+    }
+
+    /**
+     * @return void
+     */
+    public function enter()
+    {
+        \Log::debug('input keyevent enter');
+        exec('adb shell input keyevent 66');
+        sleep(1);
+    }
+
+    /**
+     * @return void
+     */
+    public function home()
+    {
+        \Log::debug('input keyevent home');
+        exec('adb shell input keyevent 3');
+        sleep(1);
+    }
+
+    /**
      * 座標 (x, y) をタップする
      *
      * @return void
@@ -126,12 +156,23 @@ final class Operator
     /**
      * @return bool|int
      */
-    public function findKeyboard()
+    public function checkInputShown()
     {
-        \Log::debug('check keyboard is shown');
+        \Log::debug('check input (keyboard) is shown');
         $cmd = 'adb shell dumpsys input_method | grep mInputShown';
         exec($cmd, $output, $return_var);
-        return strpos($output[0], 'true');
+        return strpos($output[0], 'mInputShown=true');
+    }
+
+    /**
+     * @return bool
+     */
+    public function setAdbKeyboard()
+    {
+        \Log::debug('set AdbKeyBoard');
+        $cmd = 'adb shell ime set com.android.adbkeyboard/.AdbIME';
+        exec($cmd, $output, $return_var);
+        return $output[0] == 'Input method com.android.adbkeyboard/.AdbIME selected';
     }
 
     /**
@@ -142,7 +183,8 @@ final class Operator
     public function input(string $text)
     {
         \Log::debug('input text');
-        exec('adb shell input text ' . $text, $output, $return_var);
+        $cmd = "adb shell am broadcast -a ADB_INPUT_TEXT --es msg '". $text ."'";
+        exec($cmd, $output, $return_var);
         sleep(1);
         return $return_var;
     }

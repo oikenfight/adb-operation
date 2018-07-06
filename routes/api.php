@@ -35,6 +35,18 @@ Route::group(['middleware' => ['api']], function () {
     ]);
 
     // Operations
+    Route::get('back', [
+        'uses' => 'Api\OperationsController@back',
+        'as' => 'api.back'
+    ]);
+    Route::get('enter', [
+        'uses' => 'Api\OperationsController@enter',
+        'as' => 'api.enter'
+    ]);
+    Route::get('home', [
+        'uses' => 'Api\OperationsController@home',
+        'as' => 'api.home'
+    ]);
     Route::get('tap', [
         'uses' => 'Api\OperationsController@tap',
         'as' => 'api.tap'
@@ -42,6 +54,10 @@ Route::group(['middleware' => ['api']], function () {
     Route::get('swipe', [
         'uses' => 'Api\OperationsController@swipe',
         'as' => 'api.swipe'
+    ]);
+    Route::get('inputable', [
+        'uses' => 'Api\OperationsController@inputable',
+        'as' => 'api.inputable'
     ]);
     Route::get('input', [
         'uses' => 'Api\OperationsController@input',
@@ -56,5 +72,4 @@ Route::group(['middleware' => ['api']], function () {
         'uses' => 'Api\OperationsController@uploadScreenShot',
         'as' => 'api.upload.screen.shot',
     ]);
-
 });

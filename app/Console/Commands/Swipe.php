@@ -36,11 +36,10 @@ final class Swipe extends Command
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * @param AdbOperator $adbOperator
+     * @return int
      */
-    public function handle(Operator $operator)
+    public function handle(AdbOperator $adbOperator)
     {
         $arguments = $this->arguments();
         $x = $arguments['x'];
@@ -53,13 +52,13 @@ final class Swipe extends Command
         $name = 'test.png';
 
         // setter
-        $operator->setMaxXY((int)$maxX, (int)$maxY);
-        $operator->setXY((int)$x, (int)$y);
-        $operator->setToXY((int)$toX, (int)$toY);
+        $adbOperator->setMaxXY((int)$maxX, (int)$maxY);
+        $adbOperator->setXY((int)$x, (int)$y);
+        $adbOperator->setToXY((int)$toX, (int)$toY);
 
-        $operator->turnOnIfDisplayPowerOff();
-        $operator->swipe();
-        $operator->screenShot($name);
+        $adbOperator->turnOnIfDisplayPowerOff();
+        $adbOperator->swipe();
+        $adbOperator->screenShot($name);
 
         return 200;
     }

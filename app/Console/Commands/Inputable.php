@@ -6,24 +6,24 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 /**
- * Class Tap
+ * Class Inputable
  * @package App\Console\Commands
  */
-final class Tap extends Command
+final class Inputable extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'adb:tap {x} {y} {maxX} {maxY}';
+    protected $signature = 'adb:inputable';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'tap position x, y on android device screen';
+    protected $description = 'Check whether the device is ready for input.';
 
     /**
      * Create a new command instance.
@@ -37,27 +37,18 @@ final class Tap extends Command
 
     /**
      * @param AdbOperator $adbOperator
+     *
      * @return int
      */
     public function handle(AdbOperator $adbOperator)
     {
-        $arguments = $this->arguments();
-        $x = $arguments['x'];
-        $y = $arguments['y'];
-        $maxX = $arguments['maxX'];
-        $maxY = $arguments['maxY'];
-
-        $name = 'test.png';
-
-        // setter
-        $adbOperator->setMaxXY((int)$maxX, (int)$maxY);
-        $adbOperator->setXY((int)$x, (int)$y);
-
-        // operate
         $adbOperator->turnOnIfDisplayPowerOff();
-        $adbOperator->tap();
-        $adbOperator->screenShot($name);
-
+        if (!$adbOperator->checkInputShown()) {
+            return 400;
+        }
+        if (!$adbOperator->setAdbKeyboard()) {
+            return 400;
+        }
         return 200;
     }
 }

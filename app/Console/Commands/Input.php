@@ -1,10 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class Input extends Command
+/**
+ * Class Input
+ * @package App\Console\Commands
+ */
+final class Input extends Command
 {
     /**
      * The name and signature of the console command.
@@ -18,7 +23,7 @@ class Input extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Enter text when the device is ready for input.';
 
     /**
      * Create a new command instance.
@@ -35,20 +40,16 @@ class Input extends Command
      *
      * @return mixed
      */
-    public function handle(Operator $operator)
+    public function handle(AdbOperator $adbOperator)
     {
         $arguments = $this->arguments();
         $text = $arguments['text'];
 
         $name = 'test.png';
 
-        $operator->turnOnIfDisplayPowerOff();
-        if ($operator->findKeyboard()) {
-            $operator->input($text);
-        } else {
-            return 400;
-        };
-        $operator->screenShot($name);
+        $adbOperator->turnOnIfDisplayPowerOff();
+        $adbOperator->input($text);
+        $adbOperator->screenShot($name);
 
         return 200;
     }

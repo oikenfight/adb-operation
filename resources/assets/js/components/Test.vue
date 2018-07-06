@@ -1,34 +1,53 @@
 <template>
-    <div class="col-10" style="padding-top: 40px;">
+    <div class="col-11">
         <!-- タイトル -->
         <div>
             <h2>スクリーンショット</h2>
         </div>
 
-        <div class="row">
-            <div class="col-6 justify-content-center">
-                <img id="image-preview" :src="imageSrc"
-                     v-on:mousedown="mouseDown"
-                     v-on:mouseup="mouseUp"
-                     v-on:mousemove="mouseMove"
-                     v-on:mouseout="mouseOut"
-                     draggable="false"
-                />
-            </div>
-
-            <div class="col-6">
-                <alert ref="message"></alert>
-
-                <div class="row">
+        <div class="row card" style="padding-top: 40px;">
+            <div class="row">
+                <div class="col-5">
                     <div class="col-12">
-                        <p>currentXY: ({{ mouse.current.x }}, {{ mouse.current.y }})</p>
-                    </div>
-                    <div class="col-12">
-                        <p>Clicked XY: ({{ mouse.clickedAt.x }}, {{ mouse.clickedAt.y }}), ..... Dragged XY: ({{ mouse.draggedAt.x }}, {{ mouse.draggedAt.y }})</p>
+                        <img id="image-preview" :src="imageSrc"
+                             v-on:mousedown="mouseDown"
+                             v-on:mouseup="mouseUp"
+                             v-on:mousemove="mouseMove"
+                             v-on:mouseout="mouseOut"
+                             draggable="false"
+                        />
                     </div>
                 </div>
 
-                <text-form @parentInput="input"></text-form>
+                <div class="col-7">
+                    <div class="col-12">
+                        <!-- アラート -->
+                        <div class="row">
+                            <alert ref="message"></alert>
+                        </div>
+
+                        <!-- 座標 -->
+                        <div class="row card card-body">
+                            <h4>座標</h4>
+                            <div class="col-12">
+                                <p>マウス: ({{ mouse.current.x }}, {{ mouse.current.y }})</p>
+                            </div>
+                            <div class="col-12">
+                                <p>タッチ: ({{ mouse.clickedAt.x }}, {{ mouse.clickedAt.y }}), ..... スワイプ: ({{ mouse.draggedAt.x }}, {{ mouse.draggedAt.y }})</p>
+                            </div>
+                        </div>
+
+                        <!-- 操作 -->
+                        <div class="row card card-body" style="padding-top: 50px;">
+                            <h4>操作</h4>
+                            <div class="col-12">
+                                <!-- Task: Message component を使うため親コンポーネントでメソッド書いてるけど、vuex やる。 -->
+                                <operation @parentBack="back" @parentEnter="enter" @parentHome="home"></operation>
+                                <text-form @parentInput="input"></text-form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -37,10 +56,12 @@
 <script>
     import alert from './Alert'
     import text_form from './TextForm'
+    import operation from './Operation'
 
     export default {
         components: {
             'alert': alert,
+            'operation': operation,
             'text-form': text_form
         },
         data() {
@@ -97,7 +118,7 @@
                 if (this.enabled && this.mouse.down) {
                     this.mouse.setDragToXY(this.mouse.current.x, this.mouse.current.y)
                     // tap or swipe
-                    this.operate()
+                    this.operateByMouse()
                 } else if (!this.enabled && this.mouse.down) {
                     this.clear()
                 }
@@ -145,7 +166,7 @@
 
                 return this.mouse.current
             },
-            operate () {
+            operateByMouse () {
                 // どの操作をしたのかを判定する
                 const distanceX = Math.abs(this.mouse.clickedAt.x - this.mouse.draggedAt.x)
                 const distanceY = Math.abs(this.mouse.clickedAt.y - this.mouse.draggedAt.y)
@@ -155,6 +176,42 @@
                 } else {
                     this.swipe(this.mouse.clickedAt.x, this.mouse.clickedAt.y, this.mouse.draggedAt.x, this.mouse.draggedAt.y)
                 }
+            },
+            back () {
+                this.$refs.message.set('処理中です。しばらくお待ち下さい。', 'alert-danger')
+                axios.get('/api/back')
+                .then((response) => {
+                    console.log(response)
+                    this.$refs.message.set(response.data.message, 'alert-success')
+                }).catch((error) => {
+                    console.log(error)
+                    this.$refs.message.set('操作に失敗しました。', 'alert-danger')
+                })
+                this.updateScreen()
+            },
+            enter () {
+                this.$refs.message.set('処理中です。しばらくお待ち下さい。', 'alert-danger')
+                axios.get('/api/enter')
+                .then((response) => {
+                    console.log(response)
+                    this.$refs.message.set(response.data.message, 'alert-success')
+                }).catch((error) => {
+                    console.log(error)
+                    this.$refs.message.set('操作に失敗しました。', 'alert-danger')
+                })
+                this.updateScreen()
+            },
+            home () {
+                this.$refs.message.set('処理中です。しばらくお待ち下さい。', 'alert-danger')
+                axios.get('/api/home')
+                .then((response) => {
+                    console.log(response)
+                    this.$refs.message.set(response.data.message, 'alert-success')
+                }).catch((error) => {
+                    console.log(error)
+                    this.$refs.message.set('操作に失敗しました。', 'alert-danger')
+                })
+                this.updateScreen()
             },
             tap (x, y) {
                 this.$refs.message.set('処理中です。しばらくお待ち下さい。', 'alert-danger')
@@ -167,14 +224,11 @@
                         maxY: 600,
                     }
                 }).then((response) => {
-                    const date = new Date()
-                    this.imageSrc = '/storage/test.png?' + date.getTime()
                     this.$refs.message.set(response.data.message, 'alert-success')
                 }).catch((error) => {
-                    const date = new Date()
-                    this.imageSrc = '/storage/test.png?' + date.getTime()
                     this.$refs.message.set('タップに失敗しました。リロードしてからもう一度試してください。', 'alert-danger')
                 })
+                this.updateScreen()
             },
             swipe (x, y, toX, toY) {
                 this.$refs.message.set('処理中です。しばらくお待ち下さい。', 'alert-danger')
@@ -189,14 +243,11 @@
                         maxY: 600,
                     }
                 }).then((response) => {
-                    const date = new Date()
-                    this.imageSrc = '/storage/test.png?' + date.getTime()
                     this.$refs.message.set(response.data.message, 'alert-success')
                 }).catch((error) => {
-                    const date = new Date()
-                    this.imageSrc = '/storage/test.png?' + date.getTime()
                     this.$refs.message.set('スワイプに失敗しました。リロードしてからもう一度試してください。', 'alert-danger')
                 })
+                this.updateScreen()
             },
             input (text) {
                 this.$refs.message.set('処理中です。しばらくお待ち下さい。', 'alert-danger')
@@ -206,14 +257,16 @@
                     },
                 }).then((response) => {
                     console.log(response)
-                    const date = new Date()
-                    this.imageSrc = '/storage/test.png?' + date.getTime()
                     this.$refs.message.set(response.data.message, 'alert-success')
                 }).catch((error) => {
-                    const date = new Date()
-                    this.imageSrc = '/storage/test.png?' + date.getTime()
+                    console.log(error)
                     this.$refs.message.set('テキストの入力に失敗しました。キーボード入力画面が表示されているか確認してください。', 'alert-danger')
                 })
+                this.updateScreen()
+            },
+            updateScreen () {
+                const date = new Date()
+                this.imageSrc = '/storage/test.png?' + date.getTime()
             },
         },
     }
