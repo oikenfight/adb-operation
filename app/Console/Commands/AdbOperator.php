@@ -96,24 +96,36 @@ final class AdbOperator
             sleep(2);
         }
     }
-    //
-    // /**
-    //  * @return void
-    //  */
-    // public function enter()
-    // {
-    //     \Log::debug('input keyevent enter');
-    //     exec('adb shell input keyevent 66');
-    // }
-    //
-    // /**
-    //  * @return void
-    //  */
-    // public function home()
-    // {
-    //     \Log::debug('input keyevent home');
-    //     exec('adb shell input keyevent 3');
-    // }
+
+    /**
+     * @return void
+     */
+    public function back()
+    {
+        \Log::debug('input keyevent back');
+        exec('adb shell input keyevent 4');
+        sleep(1);
+    }
+
+    /**
+     * @return void
+     */
+    public function enter()
+    {
+        \Log::debug('input keyevent enter');
+        exec('adb shell input keyevent 66');
+        sleep(1);
+    }
+
+    /**
+     * @return void
+     */
+    public function home()
+    {
+        \Log::debug('input keyevent home');
+        exec('adb shell input keyevent 3');
+        sleep(1);
+    }
 
     /**
      * 座標 (x, y) をタップする
