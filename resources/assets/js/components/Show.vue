@@ -46,6 +46,12 @@
                 date: this.$route.params.date,
                 image: this.$route.params.image,
                 imageSrc: '',
+                position: {
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                },
                 enable: false,
                 mouse: {
                     down: false,
@@ -84,8 +90,9 @@
                 }
             }
         },
-        created() {
+        mounted() {
             this.imageSrc = '/storage/' + this.date + '/' + this.image + '.png'
+            // this.getPosition()
         },
         methods: {
             mouseDown (event) {
@@ -95,10 +102,10 @@
             },
             mouseUp (event) {
                 console.log('mouse up')
-                console.log(this.enabled)
-                console.log(this.mouse.down)
                 if (this.enabled && this.mouse.down) {
                     this.mouse.setDragToXY(this.mouse.current.x, this.mouse.current.y)
+                    // TASK: tap or drag
+                    this.tap(this.mouse.previous.x, this.mouse.previous.y)
                 } else if (!this.enabled && this.mouse.down) {
                     this.clear()
                 }
@@ -147,13 +154,18 @@
 
                 return this.mouse.current
             },
-            previousXY () {
-                this.mouse.previous.x = this.mouse.current.x
-                this.mouse.previous.y = this.mouse.current.y
-            },
-            dragToXY () {
-                this.mouse.draggingTo.x = this.mouse.current.x
-                this.mouse.draggingTo.y = this.mouse.current.y
+            tap (x, y) {
+                // TASK maxX, maxY は表示している画像のサイズから自動で挿入する
+                axios.get('/api/tap', {
+                    params: {
+                        x: x,
+                        y: y,
+                        maxX: 300,
+                        maxY: 600,
+                    }
+                }).then(response => {
+                    console.log(response)
+                })
             },
         },
     }
@@ -161,7 +173,7 @@
 
 <style scoped>
     #image-preview {
-        width: 500px;
-        height: 1000px;
+        width: 300px;
+        height: 600px;
     }
 </style>
