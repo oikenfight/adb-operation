@@ -14,11 +14,18 @@
 
 <script>
     export default {
-        data () {
-            return {
-
-            }
-        },
+        methods: {
+            // TASK: 大きくなってきたから vuex 使うべき…
+            back () {
+                this.$emit('parentBack')
+            },
+            enter () {
+                this.$emit('parentEnter')
+            },
+            home () {
+                this.$emit('parentHome')
+            },
+        }
     }
 </script>
 
