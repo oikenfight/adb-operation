@@ -15,6 +15,6 @@
 {{-- Content --}}
 @section('content')
     <div class="container">
-        <div id="app">this page is index</div>
+        <div id="app"></div>
     </div>
 @endsection

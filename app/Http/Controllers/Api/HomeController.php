@@ -88,40 +88,4 @@ final class HomeController extends Controller
             'imagePath' => $imagePath,
         ];
     }
-
-    /**
-     * @param Request $request
-     * @return int
-     */
-    public function upload(Request $request)
-    {
-        $this->validate($request, [
-            'image' => [
-                'required',
-                'file',
-            ],
-            'date' => [
-                'required',
-                'string',
-                'size:8'
-            ]
-        ]);
-
-        if ($request->file('image')->isValid()) {
-            \Log::debug('valid');
-            $filename = $request->file('image')->getClientOriginalName();
-            $date = $request->input('date');
-
-            $request->file('image')->storeAs('public/'.$date, $filename);
-        } else {
-            \Log::debug('invalid');
-            \Log::debug($request);
-            return 400;
-        }
-
-        // Websocket で upload された image をブラウザに表示
-        event(new UploadScreenShot(str_replace('.png', '', $filename)));
-
-        return 200;
-    }
 }

@@ -14,6 +14,21 @@
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', [
         'uses' => 'HomeController@index',
-        'as' => 'home',
+        'as' => 'index',
     ]);
+
+    Route::get('/test', [
+        'uses' => 'HomeController@index',
+        'as' => 'test',
+    ]);
+
+    Route::get('hoge', function () {
+        return view('hoge');
+    });
+
+    Route::get('hogehoge', function () {
+        return view('pointer-on-image-test');
+    });
 });
+
+

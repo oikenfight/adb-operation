@@ -11,6 +11,11 @@ export default new VueRouter ({
             component: require('./components/Index'),
         },
         {
+            path: '/test',
+            name: 'test',
+            component: require('./components/Test'),
+        },
+        {
             path: '/:date',
             name: 'list',
             component: require('./components/List'),
