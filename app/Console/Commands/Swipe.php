@@ -36,9 +36,8 @@ final class Swipe extends Command
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * @param AdbOperator $adbOperator
+     * @return int
      */
     public function handle(AdbOperator $adbOperator)
     {
